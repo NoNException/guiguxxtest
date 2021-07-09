@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.weidiango.guiguxx.service.dao.DeployVersionMapper">
+
+    <resultMap id="deployVersionMapper" type="com.weidiango.guiguxx.api.pojo.DeployVersion">
+        <id column="id" property="id" jdbcType="INTEGER"/>
+        <result column="project_id" property="projectId" jdbcType="INTEGER"/>
+        <result column="release_state" property="releaseState" jdbcType="VARCHAR"/>
+        <result column="artifact_path" property="artifactPath" jdbcType="VARCHAR"/>
+        <result column="create_time" property="createTime"/>
+        <result column="version" property="version" jdbcType="VARCHAR"/>
+        <result column="status" property="status" jdbcType="INTEGER"/>
+    </resultMap>
+    <insert id="createNewDeployVersion" parameterType="com.weidiango.guiguxx.api.pojo.DeployVersion">
+        insert t_deploy_version (project_id, version, `status`, create_time)
+        values (#{projectId}, #{version}, #{status}, now())
+    </insert>
+    <update id="updateUserVersionToHistory" parameterType="integer">
+        update t_deploy_verison
+        set `status` = 2
+        where project_id = #{projectId}
+          and version = #{version}
+    </update>
+    <update id="saveReleaseState">
+        update t_deploy_version
+        set release_state = #{releaseState}
+        where project_id = #{projectId}
+          and version = #{version}
+    </update>
+    <select id="selectDeployVersionByProjectId" resultMap="deployVersionMapper">
+        select *
+        from t_deploy_version
+        where project_id = #{projectId}
+        order by id desc;
+    </select>
+    <select id="selectProjectUsingVersion" resultMap="deployVersionMapper">
+        select *
+        from t_deploy_version
+        where project_id = #{projectId}
+          and `status` = 1
+          and data_status = '001';
+    </select>
+    <select id="selectDeployVersionDetail" resultMap="deployVersionMapper">
+        select *
+        from t_deploy_version
+        where project_id = #{projectId}
+          and version = #{version}
+    </select>
+</mapper>
