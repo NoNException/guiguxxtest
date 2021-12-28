@@ -1,3 +1,4 @@
 i'am editor from feature/test2
 i'am editor form feature/test1
+i'am editor form feature/test1
 i'am editor form develop and i commit the conflict
